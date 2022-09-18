@@ -1,16 +1,17 @@
 <?php
-$dom = new DOMDocument();
-$html = @$dom->loadHTMLFile('index.php');
-
-$text_area = $dom->getElementById('text');
-$textarea_value = $text_area->nodeValue;
-echo $textarea_value;
-
-// require 'Methods.php';
-// $methods = new Methods();
-// if (isset($_POST['read'])) {
-// 	echo $methods->read();
-// }
+if (is_writeable("./bin/text.txt")) {
+	$file = "./bin/text.txt";
+	$handle = fopen($file, "r+");
+	$file_size = filesize($file);
+	if ($file_size > 0) {
+		$file_content = fread($handle, $file_size);
+	} else {
+		$file_content = "";
+	}
+} else {
+	echo "File does not exist.";
+	$file_content = "";
+}
 ?>
 
 <!DOCTYPE html>
@@ -34,12 +35,14 @@ echo $textarea_value;
 	<main class="main-container">
 		<section class="form-container">
 			<form class="" action="" method="POST">
-				<textarea class="form-control mb-2 text-area" name="text" id="text" placeholder="Texto"><?php echo htmlspecialchars("ola"); ?></textarea>
+				<textarea class="form-control mb-2 text-area" name="text" id="text" placeholder="Texto">
+					<?php echo $file_content; ?>
+				</textarea>
 				<section class="buttons-container mb-5">
-					<input class="btn btn-primary" type="submit" name="read" value="Leer">
-					<input class="btn btn-primary" type="submit" name="write" value="Agregar">
-					<input class="btn btn-primary" type="submit" name="update" value="Actualizar">
-					<input class="btn btn-primary" type="submit" name="delete" value="Borrar">
+					<input type="submit" formaction="./bin/create.php" class="btn btn-primary" value="Create">
+					<input type="submit" formaction="./bin/delete.php" class="btn btn-primary" value="Delete">
+					<input type="submit" formaction="./bin/write.php" class="btn btn-primary" value="Write">
+					<input type="submit" formaction="./bin/update.php" class="btn btn-primary" value="Update">
 				</section>
 			</form>
 		</section>
